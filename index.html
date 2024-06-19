@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body{
+            width: 100%;
+            height: 100vh;
+            background-color: rgb(102, 160, 211);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3rem;
+            font-family: cursive;
+        }
+        
+        .heading{
+            font-size: 4rem;
+        }
+        .player-signs{
+            font-size: 1.5rem;
+            display: flex;
+            gap: 4rem;
+        }
+
+        #reset{
+            width:120px;
+            height: 40px;
+            border-radius: 50px;
+            background-color: rgb(65, 211, 65);
+            font-size: 1.3rem;
+            font-family: cursive;
+            cursor: pointer;
+        }
+
+        .grid{
+            display: flex;
+            justify-content: center;
+        }
+        .cell{
+            width: 100px;
+            height: 100px;
+            border: 4px solid black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .winning-text{
+            font-size: 3rem;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+        <div class="heading">Tic Tac Toe</div>
+        <div class="player-signs">
+            <h2>Player 1: X</h2>
+            <h2>Player 2: O</h2>
+        </div>
+
+        <div class="res">
+            <button id="reset" onclick="reset()">Reset</button>
+        </div>
+
+        <div class="grid">
+            <div class="row">
+                <div class="cell" id="11" onclick="playGame(event)"></div>
+                <div class="cell" id="12" onclick="playGame(event)"></div>
+                <div class="cell" id="13" onclick="playGame(event)"></div>
+            </div>
+            <div class="row">
+                <div class="cell" id="21" onclick="playGame(event)"></div>
+                <div class="cell" id="22" onclick="playGame(event)"></div>
+                <div class="cell" id="23" onclick="playGame(event)"></div>
+            </div>
+            <div class="row">
+                <div class="cell" id="31" onclick="playGame(event)"></div>
+                <div class="cell" id="32" onclick="playGame(event)"></div>
+                <div class="cell" id="33" onclick="playGame(event)"></div>
+            </div>
+        </div>
+
+        <div class="winning-text" id="winning-text"></div>
+    
+</body>
+<script>
+    cell_11=document.getElementById('11');
+    cell_12=document.getElementById('12');
+    cell_13=document.getElementById('13');
+    cell_21=document.getElementById('21');
+    cell_22=document.getElementById('22');
+    cell_23=document.getElementById('23');
+    cell_31=document.getElementById('31');
+    cell_32=document.getElementById('32');
+    cell_33=document.getElementById('33');
+
+    win_text=document.getElementById('winning-text');
+
+    gameStatus=localStorage.getItem('gameStatus')?localStorage.getItem('gameStatus'):true;
+
+    count=localStorage.getItem('count')?localStorage.getItem('count'):0;
+
+    turn=localStorage.getItem('turn')?localStorage.getItem('turn'):'O';
+
+
+    displayCells();
+
+
+    function hchecker(){        
+        if((!cell_11.innerHTML=='' || !cell_12.innerHTML=='' || !cell_13.innerHTML=='') && (cell_11.innerHTML==cell_12.innerHTML && cell_12.innerHTML==cell_13.innerHTML))
+            return true;
+        else if((!cell_21.innerHTML=='' || !cell_22.innerHTML=='' || !cell_23.innerHTML=='') && (cell_21.innerHTML==cell_22.innerHTML && cell_22.innerHTML==cell_23.innerHTML))
+            return true;
+        else if((!cell_31.innerHTML=='' || !cell_32.innerHTML=='' || !cell_33.innerHTML=='') && (cell_31.innerHTML==cell_32.innerHTML && cell_32.innerHTML==cell_33.innerHTML))
+            return true;
+        else
+            return false;
+
+    }
+    
+    function vchecker(){        
+        if((!cell_11.innerHTML=='' || !cell_21.innerHTML=='' || !cell_31.innerHTML=='') && (cell_11.innerHTML==cell_21.innerHTML && cell_21.innerHTML==cell_31.innerHTML))
+            return true;
+        else if((!cell_12.innerHTML=='' || !cell_22.innerHTML=='' || !cell_32.innerHTML=='') && (cell_12.innerHTML==cell_22.innerHTML &  cell_22.innerHTML==cell_32.innerHTML))
+            return true;
+        else if((!cell_13.innerHTML=='' || !cell_23.innerHTML=='' || !cell_33.innerHTML=='') && (cell_13.innerHTML==cell_23.innerHTML &  cell_23.innerHTML==cell_33.innerHTML))
+            return true;
+        else
+            return false;
+    }
+
+    function dchecker(){        
+        if((!cell_11.innerHTML=='' || !cell_22.innerHTML=='' || !cell_33.innerHTML=='') && (cell_11.innerHTML==cell_22.innerHTML && cell_22.innerHTML==cell_33.innerHTML))
+            return true;
+        else if((!cell_13.innerHTML=='' || !cell_22.innerHTML=='' || !cell_31.innerHTML=='') && (cell_13.innerHTML==cell_22.innerHTML && cell_22.innerHTML==cell_31.innerHTML))
+            return true;
+        else
+            return false;
+    }
+
+    function displayCells(){
+        cell_11.innerHTML=localStorage.getItem('11');
+        cell_12.innerHTML=localStorage.getItem('12');
+        cell_13.innerHTML=localStorage.getItem('13');
+        cell_21.innerHTML=localStorage.getItem('21');
+        cell_22.innerHTML=localStorage.getItem('22');
+        cell_23.innerHTML=localStorage.getItem('23');
+        cell_31.innerHTML=localStorage.getItem('31');
+        cell_32.innerHTML=localStorage.getItem('32');
+        cell_33.innerHTML=localStorage.getItem('33');
+    }
+    
+    function playGame(e){
+        if(gameStatus){
+        count++;
+        updateCount();
+        let currCell=document.getElementById(e.target.id);
+        updateCell(currCell);
+        }
+    }
+
+    function updateCell(currCell){
+        
+        if(turn=='X'){
+        currCell.innerHTML='O';
+        turn='O';
+        updateTurn();
+        updateCellValue(currCell,'O');
+        }
+        else{
+        currCell.innerHTML='X';
+        turn='X';
+        updateTurn();
+        updateCellValue(currCell,'X');
+        }
+        winCheck();
+    }
+
+    function winCheck(){
+        if(count<9){
+            if(hchecker() || vchecker() || dchecker()){
+                console.log('Hi');
+                endGame(true);
+            }
+        }
+        else
+        endGame(false);
+    }
+
+    function updateStatus(){
+        localStorage.setItem('gameStatus',gameStatus);
+    }
+
+    function updateCount(){
+        localStorage.setItem('count',count);
+    }
+
+    function updateTurn(){
+        localStorage.setItem('turn',turn);
+    }
+
+    function updateCellValue(currCell,val){
+        console.log(`${currCell.id}`);
+        localStorage.setItem(`${currCell.id}`,val);
+        console.log(localStorage.getItem(`${currCell.id}`));
+    }
+
+
+    function endGame(isWin){
+        localStorage.setItem('gameStatus','off');
+        updateStatus();
+
+        if(isWin==true){
+        if(turn=='X')
+        win_text.innerHTML='Player 1 Wins!!!';
+        else
+        win_text.innerHTML='Player 2 Wins!!!';
+        }
+        else
+        win_text.innerHTML='Draw';
+        
+        cell_11.style.pointerEvents='none';
+        cell_12.style.pointerEvents='none';
+        cell_13.style.pointerEvents='none';
+        cell_21.style.pointerEvents='none';
+        cell_22.style.pointerEvents='none';
+        cell_23.style.pointerEvents='none';
+        cell_31.style.pointerEvents='none';
+        cell_32.style.pointerEvents='none';
+        cell_33.style.pointerEvents='none';
+    }
+    
+    function reset(){
+        localStorage.setItem('gameStatus','on');
+        gameStatus='on';
+
+        win_text.innerHTML='';
+
+        cell_11.style.pointerEvents='auto';
+        cell_12.style.pointerEvents='auto';
+        cell_13.style.pointerEvents='auto';
+        cell_21.style.pointerEvents='auto';
+        cell_22.style.pointerEvents='auto';
+        cell_23.style.pointerEvents='auto';
+        cell_31.style.pointerEvents='auto';
+        cell_32.style.pointerEvents='auto';
+        cell_33.style.pointerEvents='auto';
+
+        localStorage.setItem('11','');
+        localStorage.setItem('12','');
+        localStorage.setItem('13','');
+        localStorage.setItem('21','');
+        localStorage.setItem('22','');
+        localStorage.setItem('23','');
+        localStorage.setItem('31','');
+        localStorage.setItem('32','');
+        localStorage.setItem('33','');
+
+        localStorage.setItem('count',0);
+        count=0;
+
+        localStorage.setItem('turn','O');
+        turn='O';
+        
+        displayCells()
+    }
+</script>
+</html>
