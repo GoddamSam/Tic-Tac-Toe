@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe</title>
+    <link rel="shortcut icon" href="./favicon.png" type="image/x-icon">
     <style>
         *{
             margin: 0;
@@ -60,6 +61,35 @@
         .winning-text{
             font-size: 3rem;
             font-weight: 700;
+        }
+
+        @media screen and (max-width:500px){
+
+            body{
+                gap: 2rem;
+            }
+            .heading{
+                font-size: 3rem;
+            }
+
+            .player-signs{
+                font-size: 1.2rem;
+            }
+
+            .cell{
+                width: 85px;
+                height: 85px;
+            }
+
+            #reset{
+                width: 130px;
+                height: 50px;
+                font-size: 2rem;
+            }
+
+            .winning-text{
+                font-size: 2.5rem;
+            }
         }
     </style>
 </head>
@@ -191,12 +221,15 @@
     function winCheck(){
         if(count<9){
             if(hchecker() || vchecker() || dchecker()){
-                console.log('Hi');
                 endGame(true);
             }
         }
-        else
-        endGame(false);
+        else{
+            if(hchecker() || vchecker() || dchecker())
+                endGame(true);
+            else
+            endGame(false);
+        }
     }
 
     function updateStatus(){
